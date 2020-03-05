@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B63FC3151FEA3AD20051B2A4 /* RCTContacts.m in Sources */ = {isa = PBXBuildFile; fileRef = B63FC3141FEA3AD20051B2A4 /* RCTContacts.m */; };
+		EF8D59E02410DA1B006EF31A /* CNContactViewController+CancelHack.m in Sources */ = {isa = PBXBuildFile; fileRef = EF8D59DF2410DA1B006EF31A /* CNContactViewController+CancelHack.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,6 +27,8 @@
 		1441618E1BD0A79300FA4F59 /* libRCTContacts.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRCTContacts.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B63FC3131FEA3AD20051B2A4 /* RCTContacts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTContacts.h; sourceTree = "<group>"; };
 		B63FC3141FEA3AD20051B2A4 /* RCTContacts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTContacts.m; sourceTree = "<group>"; };
+		EF8D59DE2410DA1B006EF31A /* CNContactViewController+CancelHack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CNContactViewController+CancelHack.h"; sourceTree = "<group>"; };
+		EF8D59DF2410DA1B006EF31A /* CNContactViewController+CancelHack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CNContactViewController+CancelHack.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +47,8 @@
 			children = (
 				B63FC3131FEA3AD20051B2A4 /* RCTContacts.h */,
 				B63FC3141FEA3AD20051B2A4 /* RCTContacts.m */,
+				EF8D59DE2410DA1B006EF31A /* CNContactViewController+CancelHack.h */,
+				EF8D59DF2410DA1B006EF31A /* CNContactViewController+CancelHack.m */,
 			);
 			path = RCTContacts;
 			sourceTree = "<group>";
@@ -103,6 +108,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 145CC5671AED80100006342E;
@@ -121,6 +127,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B63FC3151FEA3AD20051B2A4 /* RCTContacts.m in Sources */,
+				EF8D59E02410DA1B006EF31A /* CNContactViewController+CancelHack.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
