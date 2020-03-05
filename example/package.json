@@ -11,7 +11,7 @@
         "@jumpn/react-native-jetifier": "^0.1.4",
         "react": "16.8.3",
         "react-native": "0.59.9",
-        "react-native-contacts": "https://github.com/anotherleon/react-native-contacts.git",
+        "react-native-contacts": "file:../",
         "react-native-gesture-handler": "~1.4.0"
     },
     "devDependencies": {

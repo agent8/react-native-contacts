@@ -5023,9 +5023,8 @@ react-is@^16.8.1, react-is@^16.8.3, react-is@^16.8.4:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.8.6.tgz#5bbc1e2d29141c9fbdfed456343fe2bc430a6a16"
   integrity sha512-aUk3bHfZ2bRSVFFbbeVS4i+lNPZr3/WM5jT2J5omUVV1zzcs1nAaf3l51ctA5FFvCRbhrH0bdAsRRQddFJZPtA==
 
-"react-native-contacts@https://github.com/rt2zz/react-native-contacts.git":
-  version "5.0.6"
-  resolved "https://github.com/rt2zz/react-native-contacts.git#00dfd1b7db01d295c01bfb9ac6c32f623830fe97"
+"react-native-contacts@file:..":
+  version "5.0.7"
 
 react-native-gesture-handler@~1.4.0:
   version "1.4.1"
