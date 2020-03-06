@@ -11,7 +11,7 @@
 
 @implementation CNContactViewController (CancelHack)
 - (void)cancelHack {
-    [[self delegate] contactViewController:self didCompleteWithContact:self.contact];
+    [[self delegate] contactViewController:self didCompleteWithContact: nil];
 }
 
 + (void)swizzleEditCancelMethod {

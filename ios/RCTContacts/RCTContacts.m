@@ -650,7 +650,7 @@ RCT_EXPORT_METHOD(openExistingContact:(NSDictionary *)contactData callback:(RCTR
         CNContactViewController *contactViewController = [CNContactViewController viewControllerForContact:contact];
 
         // Add a cancel button which will close the view
-        contactViewController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:backTitle == nil ? @"Cancel" : backTitle style:UIBarButtonSystemItemCancel target:self action:@selector(cancelContactForm)];
+        contactViewController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:backTitle == nil ? @"Cancel1" : backTitle style:UIBarButtonSystemItemCancel target:self action:@selector(cancelContactForm)];
         contactViewController.delegate = self;
 
 
@@ -665,10 +665,29 @@ RCT_EXPORT_METHOD(openExistingContact:(NSDictionary *)contactData callback:(RCTR
             }
 
             // Cover the contact view with an activity indicator so we can put it in edit mode without user seeing the transition
-            UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+          
+            
+            UIActivityIndicatorView *activityIndicatorView;
+            
+            if (@available(iOS 12.0, *)) {
+                if(currentViewController.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark){
+                   activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+                } else{
+                    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                }
+            } else {
+                 activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+            }
+           
+            
             activityIndicatorView.frame = UIApplication.sharedApplication.keyWindow.frame;
             [activityIndicatorView startAnimating];
-            activityIndicatorView.backgroundColor = [UIColor whiteColor];
+            if (@available(iOS 13.0, *)) {
+                activityIndicatorView.backgroundColor = [UIColor systemBackgroundColor];
+            } else {
+                activityIndicatorView.backgroundColor = [UIColor whiteColor];
+            }
+            
             [navigation.view addSubview:activityIndicatorView];
 
             [currentViewController presentViewController:navigation animated:YES completion:nil];
@@ -685,7 +704,7 @@ RCT_EXPORT_METHOD(openExistingContact:(NSDictionary *)contactData callback:(RCTR
 
 
             // We need to wait for a short while otherwise contactViewController will not respond to the selector (it has not initialized)
-            [contactViewController performSelector:@selector(toggleEditing:) withObject:nil afterDelay:0.1];
+            [contactViewController performSelector:@selector(toggleEditing:) withObject:nil afterDelay: 0.1];
 
             // remove the activity indicator after a delay so the underlying transition will have time to complete
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -717,7 +736,6 @@ RCT_EXPORT_METHOD(openExistingContact:(NSDictionary *)contactData callback:(RCTR
     [viewController dismissViewControllerAnimated:YES completion:nil];
 
     if(updateContactCallback) {
-
         if (contact) {
             NSDictionary *contactDict = [self contactToDictionary:contact withThumbnails:true];
             updateContactCallback(@[[NSNull null], contactDict]);

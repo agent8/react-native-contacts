@@ -27,6 +27,7 @@
 		1441618E1BD0A79300FA4F59 /* libRCTContacts.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRCTContacts.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B63FC3131FEA3AD20051B2A4 /* RCTContacts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTContacts.h; sourceTree = "<group>"; };
 		B63FC3141FEA3AD20051B2A4 /* RCTContacts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTContacts.m; sourceTree = "<group>"; };
+		EF4EE3082411113200253B97 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../../example/node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		EF8D59DE2410DA1B006EF31A /* CNContactViewController+CancelHack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CNContactViewController+CancelHack.h"; sourceTree = "<group>"; };
 		EF8D59DF2410DA1B006EF31A /* CNContactViewController+CancelHack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CNContactViewController+CancelHack.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -58,6 +59,7 @@
 			children = (
 				1441618F1BD0A79300FA4F59 /* RCTContacts */,
 				145CC5711AED80100006342E /* Products */,
+				EF4EE34C2411125900253B97 /* Libraries */,
 			);
 			sourceTree = "<group>";
 		};
@@ -67,6 +69,14 @@
 				1441618E1BD0A79300FA4F59 /* libRCTContacts.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		EF4EE34C2411125900253B97 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				EF4EE3082411113200253B97 /* React.xcodeproj */,
+			);
+			path = Libraries;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -143,7 +153,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
-					"$(BUILT_PRODUCTS_DIR)",
+					"\"$(SRCROOT)/../example/node_modules/react-native/React\"",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -158,7 +168,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
-					"$(BUILT_PRODUCTS_DIR)",
+					"\"$(SRCROOT)/../example/node_modules/react-native/React\"",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
