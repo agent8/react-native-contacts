@@ -668,7 +668,7 @@ RCT_EXPORT_METHOD(openExistingContact:(NSDictionary *)contactData callback:(RCTR
           
             
             UIActivityIndicatorView *activityIndicatorView;
-            
+
             if (@available(iOS 12.0, *)) {
                 if(currentViewController.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark){
                    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
