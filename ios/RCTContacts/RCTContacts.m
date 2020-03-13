@@ -620,6 +620,7 @@ RCT_EXPORT_METHOD(openContactForm:(NSDictionary *)contactData callback:(RCTRespo
             {
                 viewController = viewController.presentedViewController;
             }
+        navigation.modalPresentationStyle = UIModalPresentationFullScreen;
         [viewController presentViewController:navigation animated:YES completion:nil];
 
         updateContactCallback = callback;
@@ -648,14 +649,13 @@ RCT_EXPORT_METHOD(openExistingContact:(NSDictionary *)contactData callback:(RCTR
         CNContact *contact = [contactStore unifiedContactWithIdentifier:recordID keysToFetch:keys error:nil];
 
         CNContactViewController *contactViewController = [CNContactViewController viewControllerForContact:contact];
+        contactViewController.allowsEditing = YES;
+        contactViewController.allowsActions = YES;
 
-        // Add a cancel button which will close the view
-        contactViewController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:backTitle == nil ? @"Cancel1" : backTitle style:UIBarButtonSystemItemCancel target:self action:@selector(cancelContactForm)];
         contactViewController.delegate = self;
 
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            UINavigationController* navigation = [[UINavigationController alloc] initWithRootViewController:contactViewController];
 
             UIViewController *currentViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
 
@@ -688,9 +688,23 @@ RCT_EXPORT_METHOD(openExistingContact:(NSDictionary *)contactData callback:(RCTR
                 activityIndicatorView.backgroundColor = [UIColor whiteColor];
             }
             
-            [navigation.view addSubview:activityIndicatorView];
-
-            [currentViewController presentViewController:navigation animated:YES completion:nil];
+            if (currentViewController.navigationController) {
+                [contactViewController.view addSubview:activityIndicatorView];
+                [currentViewController.navigationController pushViewController:contactViewController animated:true];
+            } else {
+                UINavigationController* navigation = [[UINavigationController alloc] initWithRootViewController:contactViewController];
+                // Add a cancel button which will close the view
+                if ([NSThread isMainThread]) {
+                    contactViewController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:backTitle == nil ? @"Cancel" : backTitle style: UIBarButtonItemStylePlain target:self action:@selector(cancelContactForm)];
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        contactViewController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:backTitle == nil ? @"Cancel" : backTitle style: UIBarButtonItemStylePlain target:self action:@selector(cancelContactForm)];
+                    });
+                }
+                //[navigation.view addSubview:activityIndicatorView];
+                navigation.modalPresentationStyle = UIModalPresentationFullScreen;
+                [currentViewController presentViewController:navigation animated:YES completion:nil];
+            }
 
 
             // TODO should this 'fake click' method be used? For a brief instance
@@ -707,9 +721,9 @@ RCT_EXPORT_METHOD(openExistingContact:(NSDictionary *)contactData callback:(RCTR
             [contactViewController performSelector:@selector(toggleEditing:) withObject:nil afterDelay: 0.1];
 
             // remove the activity indicator after a delay so the underlying transition will have time to complete
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [activityIndicatorView removeFromSuperview];
-            });
+//            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                [activityIndicatorView removeFromSuperview];
+//            });
 
             updateContactCallback = callback;
         });

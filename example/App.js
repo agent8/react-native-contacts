@@ -7,15 +7,23 @@
  */
 
 import React, { Component } from "react";
-import { PermissionsAndroid, Platform, SafeAreaView, ScrollView, StyleSheet, Text, View, Image } from "react-native";
+import {
+    PermissionsAndroid,
+    Platform,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
+    Image,
+    Button,
+} from "react-native";
 import Contacts from "react-native-contacts";
-
 import ListItem from "./components/ListItem";
 import Avatar from "./components/Avatar";
 import SearchBar from "./components/SearchBar";
-
-type Props = {};
-export default class App extends Component<Props> {
+import { addToContacts } from "./methods";
+export default class App extends Component {
     constructor(props) {
         super(props);
 
@@ -80,6 +88,10 @@ export default class App extends Component<Props> {
         }
     }
 
+    addContact = () => {
+        addToContacts("wangliang1124@163.com", "王亮");
+    };
+
     render() {
         return (
             <SafeAreaView style={styles.container}>
@@ -100,6 +112,13 @@ export default class App extends Component<Props> {
                     />
                 </View>
                 <SearchBar searchPlaceholder={this.state.searchPlaceholder} onChangeText={this.search} />
+                <Button
+                    onPress={this.addContact}
+                    title="Add New Contact"
+                    style={{
+                        backgroundColor: "#ccc",
+                    }}
+                />
                 <ScrollView style={{ flex: 1 }}>
                     {this.state.contacts.map(contact => {
                         return (
