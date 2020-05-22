@@ -17,6 +17,7 @@ import {
     View,
     Image,
     Button,
+    Alert,
 } from "react-native";
 import Contacts from "react-native-contacts";
 import ListItem from "./components/ListItem";
@@ -31,6 +32,7 @@ export default class App extends Component {
 
         this.state = {
             contacts: [],
+            contact: {},
             searchPlaceholder: "Search",
         };
 
@@ -96,6 +98,39 @@ export default class App extends Component {
         addToBlocklist(15893009511);
     };
 
+    getContact = () => {
+        Contacts.getContactsByEmailAddress("wangliang1124@163.com", (error, contacts) => {
+            console.log("===getContactsByEmailAddress===", contacts);
+            let item = contacts.find((item) => item.givenName === "王亮");
+            this.setState({
+                contact: item,
+            });
+            Alert.alert("contact info", JSON.stringify(item));
+        });
+    };
+
+    updateContact = () => {
+        Contacts.updateContact(
+            {
+                ...this.state.contact,
+                urlAddresses: [{ label: "linkedinTest", url: "www.test.com" }],
+                socialProfiles: [
+                    {
+                        label: "twitter",
+                        value: {
+                            urlString: "http://twitter.com/leon",
+                            service: "Twitter",
+                            username: "Leon",
+                        },
+                    },
+                ],
+            },
+            (error, contacts) => {
+                console.log("===updateContact===", error, contacts);
+            }
+        );
+    };
+
     render() {
         return (
             <SafeAreaView style={styles.container}>
@@ -119,9 +154,21 @@ export default class App extends Component {
                 <View style={styles.button}>
                     <Button onPress={this.addContact} title="Add New Contact" />
                 </View>
-                <View style={{ height: 4 }}></View>
+                {/* <View style={{ height: 4 }}></View>
                 <View style={styles.button}>
                     <Button onPress={this.blockContact} title="Block Contact" style={styles.button} />
+                </View> */}
+                <View style={{ height: 4 }}></View>
+                <View style={styles.button}>
+                    <Button onPress={this.getContact} title="Get Contact" style={styles.button} />
+                </View>
+                <View style={{ height: 4 }}></View>
+                <View style={styles.button}>
+                    <Button
+                        onPress={this.updateContact}
+                        title="Update Contact(先点get Contact)"
+                        style={styles.button}
+                    />
                 </View>
                 <ScrollView style={{ flex: 1 }}>
                     {this.state.contacts.map((contact) => {
