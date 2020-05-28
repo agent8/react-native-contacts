@@ -167,6 +167,7 @@ RCT_EXPORT_METHOD(getContactsByEmailAddress:(NSString *)string callback:(RCTResp
                       CNContactJobTitleKey,
                       CNContactImageDataAvailableKey,
                       CNContactThumbnailImageDataKey,
+                      CNContactSocialProfilesKey,
                       CNContactUrlAddressesKey,
                       CNContactBirthdayKey
                       ];
@@ -266,6 +267,7 @@ RCT_EXPORT_METHOD(getCount:(RCTResponseSenderBlock) callback)
                                        CNContactOrganizationNameKey,
                                        CNContactJobTitleKey,
                                        CNContactImageDataAvailableKey,
+                                       CNContactSocialProfilesKey,
                                        CNContactUrlAddressesKey,
                                        CNContactBirthdayKey
                                        ]];
@@ -371,8 +373,47 @@ RCT_EXPORT_METHOD(getCount:(RCTResponseSenderBlock) callback)
     }
 
     [output setObject: urlAddresses forKey:@"urlAddresses"];
-
     //end urls
+    
+    //handle socialProfiles
+    NSMutableArray *socialProfiles = [[NSMutableArray alloc] init];
+
+    for (CNLabeledValue<NSString*>* labeledValue in person.socialProfiles) {
+        NSMutableDictionary* profile = [NSMutableDictionary dictionary];
+        NSString* label = [CNLabeledValue localizedStringForLabel:[labeledValue label]];
+        CNSocialProfile *cnSocialProfile = [[labeledValue value] mutableCopy];
+        NSMutableDictionary* profileValue = [NSMutableDictionary dictionary];
+        
+        
+
+        if(cnSocialProfile) {
+            if(!label) {
+                label = [CNLabeledValue localizedStringForLabel:@"home"];
+            }
+            NSString* urlString = [cnSocialProfile urlString];
+            NSString* username = [cnSocialProfile username];
+            NSString* service = [CNSocialProfile localizedStringForService: [cnSocialProfile service]];
+            NSString* userIdentifier = [cnSocialProfile userIdentifier];
+            
+            [profileValue setObject: urlString forKey:@"urlString"];
+            [profileValue setObject: username forKey:@"username"];
+            [profileValue setObject: service forKey:@"service"];
+            if(userIdentifier) {
+                [profileValue setObject: userIdentifier forKey:@"userIdentifier"];
+            } else {
+                [profileValue setObject: @"" forKey:@"userIdentifier"];
+            }
+            
+            [profile setObject: profileValue forKey:@"profile"];
+            [profile setObject: label forKey:@"label"];
+            [socialProfiles addObject:profile];
+        } else {
+            NSLog(@"ignoring blank profile");
+        }
+    }
+
+    [output setObject: socialProfiles forKey:@"socialProfiles"];
+    //end socialProfiles
 
     //handle emails
     NSMutableArray *emailAddreses = [[NSMutableArray alloc] init];
@@ -561,6 +602,7 @@ RCT_EXPORT_METHOD(getContactById:(nonnull NSString *)recordID callback:(RCTRespo
                       CNContactOrganizationNameKey,
                       CNContactJobTitleKey,
                       CNContactImageDataAvailableKey,
+                      CNContactSocialProfilesKey,
                       CNContactUrlAddressesKey,
                       CNContactBirthdayKey
                       ];
@@ -781,6 +823,7 @@ RCT_EXPORT_METHOD(updateContact:(NSDictionary *)contactData callback:(RCTRespons
                              CNContactImageDataAvailableKey,
                              CNContactThumbnailImageDataKey,
                              CNContactImageDataKey,
+                             CNContactSocialProfilesKey,
                              CNContactUrlAddressesKey,
                              CNContactBirthdayKey
                              ];
@@ -874,6 +917,32 @@ RCT_EXPORT_METHOD(updateContact:(NSDictionary *)contactData callback:(RCTRespons
     }
 
     contact.urlAddresses = urls;
+    
+    // update socialProfiles
+    NSMutableArray *socialProfiles = [[NSMutableArray alloc]init];
+
+    for (id urlData in [contactData valueForKey:@"socialProfiles"]) {
+        NSString *label = [urlData valueForKey:@"label"];
+        NSDictionary *value = [urlData valueForKey:@"value"];
+        
+        CNSocialProfile *cnSocialProfile = [[CNSocialProfile alloc] init];
+        
+        NSString * username = [value valueForKey:@"username"];
+        [cnSocialProfile setValue: username forKey:@"username"];
+        
+        NSString* urlString = [value valueForKey:@"urlString"];
+        NSString* service = [value valueForKey:@"service"];
+//
+        [cnSocialProfile setValue: urlString forKey:@"urlString"];
+        [cnSocialProfile setValue: service forKey:@"service"];
+        
+
+        if(label && cnSocialProfile) {
+            [socialProfiles addObject:[[CNLabeledValue alloc] initWithLabel:label value: cnSocialProfile]];
+        }
+    }
+
+    contact.socialProfiles = socialProfiles;
 
 
     NSMutableArray *emails = [[NSMutableArray alloc]init];

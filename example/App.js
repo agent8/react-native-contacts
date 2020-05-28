@@ -17,12 +17,13 @@ import {
     View,
     Image,
     Button,
+    Alert,
 } from "react-native";
 import Contacts from "react-native-contacts";
 import ListItem from "./components/ListItem";
 import Avatar from "./components/Avatar";
 import SearchBar from "./components/SearchBar";
-import { addToContacts } from "./methods";
+import { addToContacts, addToBlocklist } from "./methods";
 export default class App extends Component {
     constructor(props) {
         super(props);
@@ -31,6 +32,7 @@ export default class App extends Component {
 
         this.state = {
             contacts: [],
+            contact: {},
             searchPlaceholder: "Search",
         };
 
@@ -63,7 +65,7 @@ export default class App extends Component {
             }
         });
 
-        Contacts.getCount(count => {
+        Contacts.getCount((count) => {
             this.setState({ searchPlaceholder: `Search ${count} contacts` });
         });
     }
@@ -92,6 +94,43 @@ export default class App extends Component {
         addToContacts("wangliang1124@163.com", "王亮");
     };
 
+    blockContact = () => {
+        addToBlocklist(15893009511);
+    };
+
+    getContact = () => {
+        Contacts.getContactsByEmailAddress("wangliang1124@163.com", (error, contacts) => {
+            console.log("===getContactsByEmailAddress===", contacts);
+            let item = contacts.find((item) => item.givenName === "王亮");
+            this.setState({
+                contact: item,
+            });
+            Alert.alert("contact info", JSON.stringify(item));
+        });
+    };
+
+    updateContact = () => {
+        Contacts.updateContact(
+            {
+                ...this.state.contact,
+                urlAddresses: [{ label: "linkedinTest", url: "www.test.com" }],
+                socialProfiles: [
+                    {
+                        label: "twitter",
+                        value: {
+                            urlString: "http://twitter.com/leon",
+                            service: "Twitter",
+                            username: "Leon",
+                        },
+                    },
+                ],
+            },
+            (error, contacts) => {
+                console.log("===updateContact===", error, contacts);
+            }
+        );
+    };
+
     render() {
         return (
             <SafeAreaView style={styles.container}>
@@ -112,15 +151,27 @@ export default class App extends Component {
                     />
                 </View>
                 <SearchBar searchPlaceholder={this.state.searchPlaceholder} onChangeText={this.search} />
-                <Button
-                    onPress={this.addContact}
-                    title="Add New Contact"
-                    style={{
-                        backgroundColor: "#ccc",
-                    }}
-                />
+                <View style={styles.button}>
+                    <Button onPress={this.addContact} title="Add New Contact" />
+                </View>
+                {/* <View style={{ height: 4 }}></View>
+                <View style={styles.button}>
+                    <Button onPress={this.blockContact} title="Block Contact" style={styles.button} />
+                </View> */}
+                <View style={{ height: 4 }}></View>
+                <View style={styles.button}>
+                    <Button onPress={this.getContact} title="Get Contact" style={styles.button} />
+                </View>
+                <View style={{ height: 4 }}></View>
+                <View style={styles.button}>
+                    <Button
+                        onPress={this.updateContact}
+                        title="Update Contact(先点get Contact)"
+                        style={styles.button}
+                    />
+                </View>
                 <ScrollView style={{ flex: 1 }}>
-                    {this.state.contacts.map(contact => {
+                    {this.state.contacts.map((contact) => {
                         return (
                             <ListItem
                                 leftElement={
@@ -153,9 +204,14 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
+    button: {
+        backgroundColor: "#ccc",
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: "#ccc",
+    },
 });
 
-const getAvatarInitials = textString => {
+const getAvatarInitials = (textString) => {
     if (!textString) return "";
 
     const text = textString.trim();

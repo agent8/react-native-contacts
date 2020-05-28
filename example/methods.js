@@ -1,6 +1,6 @@
 import Contacts from "react-native-contacts";
 
-export async function addToContacts(email, name) {
+export function addToContacts(email, name) {
     return new Promise((resolve, reject) => {
         const contactObject = {
             emailAddresses: [
@@ -26,4 +26,12 @@ export async function addToContacts(email, name) {
             }
         });
     });
+}
+
+export function addToBlocklist(phoneNumber) {
+    if (Contacts.addIdentificationPhoneNumbersToContext) {
+        Contacts.addToBlockList(() => {
+            console.log("block=======");
+        });
+    }
 }
