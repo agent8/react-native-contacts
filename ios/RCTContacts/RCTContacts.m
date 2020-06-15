@@ -657,7 +657,7 @@ RCT_EXPORT_METHOD(openContactForm:(NSDictionary *)contactData callback:(RCTRespo
 
     dispatch_async(dispatch_get_main_queue(), ^{
         UINavigationController* navigation = [[UINavigationController alloc] initWithRootViewController:controller];
-        UIViewController *viewController = (UIViewController*)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
+        UIViewController *viewController = [UIApplication sharedApplication].keyWindow.rootViewController;
         while (viewController.presentedViewController)
             {
                 viewController = viewController.presentedViewController;
@@ -779,7 +779,7 @@ RCT_EXPORT_METHOD(openExistingContact:(NSDictionary *)contactData callback:(RCTR
 - (void)cancelContactForm
 {
     if (updateContactCallback != nil) {
-        UIViewController *rootViewController = (UIViewController*)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
+        UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
         [rootViewController dismissViewControllerAnimated:YES completion:nil];
 
         updateContactCallback(@[[NSNull null]]);
