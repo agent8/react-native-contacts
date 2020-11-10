@@ -805,9 +805,15 @@ public class ContactsManager extends ReactContextBaseJavaModule implements Activ
                 .withValue(RawContacts.ACCOUNT_NAME, null);
         ops.add(op.build());
 
-        op = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
-                .withSelection(ContactsContract.Data.CONTACT_ID + "=?", new String[]{String.valueOf(recordID)})
+        // Fix https://easilydo.atlassian.net/browse/ECANDR-4523
+        // delete old data
+        op = ContentProviderOperation.newDelete(ContactsContract.Data.CONTENT_URI)
+                .withSelection(ContactsContract.Data.CONTACT_ID + "=?", new String[]{String.valueOf(recordID)});
+        ops.add(op.build());
+        // insert new data
+        op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                 .withValue(ContactsContract.Data.MIMETYPE, StructuredName.CONTENT_ITEM_TYPE)
+                .withValue(ContactsContract.Data.RAW_CONTACT_ID, String.valueOf(rawContactId))
                 .withValue(StructuredName.GIVEN_NAME, givenName)
                 .withValue(StructuredName.MIDDLE_NAME, middleName)
                 .withValue(StructuredName.FAMILY_NAME, familyName)
