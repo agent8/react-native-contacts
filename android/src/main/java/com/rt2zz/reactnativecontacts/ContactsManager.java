@@ -798,17 +798,20 @@ public class ContactsManager extends ReactContextBaseJavaModule implements Activ
         }
 
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+        ContentProviderOperation.Builder op = null;
 
-        ContentProviderOperation.Builder op = ContentProviderOperation.newUpdate(RawContacts.CONTENT_URI)
-                .withSelection(ContactsContract.Data.CONTACT_ID + "=?", new String[]{String.valueOf(recordID)})
-                .withValue(RawContacts.ACCOUNT_TYPE, null)
-                .withValue(RawContacts.ACCOUNT_NAME, null);
-        ops.add(op.build());
+        // Fix https://easilydo.atlassian.net/browse/ECANDR-4704
+//        op = ContentProviderOperation.newUpdate(RawContacts.CONTENT_URI)
+//                .withSelection(ContactsContract.Data.CONTACT_ID + "=?", new String[]{String.valueOf(recordID)})
+//                .withValue(RawContacts.ACCOUNT_TYPE, "")
+//                .withValue(RawContacts.ACCOUNT_NAME, "");
+//        ops.add(op.build());
 
         // Fix https://easilydo.atlassian.net/browse/ECANDR-4523
         // delete old data
         op = ContentProviderOperation.newDelete(ContactsContract.Data.CONTENT_URI)
-                .withSelection(ContactsContract.Data.CONTACT_ID + "=?", new String[]{String.valueOf(recordID)});
+                .withSelection(ContactsContract.Data.MIMETYPE + "=? AND " + ContactsContract.Data.CONTACT_ID + "=?",
+                        new String[]{String.valueOf(StructuredName.CONTENT_ITEM_TYPE), String.valueOf(recordID)});
         ops.add(op.build());
         // insert new data
         op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
