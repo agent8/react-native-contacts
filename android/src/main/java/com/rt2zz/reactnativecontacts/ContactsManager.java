@@ -635,19 +635,28 @@ public class ContactsManager extends ReactContextBaseJavaModule implements Activ
         if (postalAddresses != null) {
             for (int i = 0; i < postalAddresses.size(); i++) {
                 ReadableMap address = postalAddresses.getMap(i);
+                // https://easilydo.atlassian.net/browse/ECANDR-4790
+                if (address != null) {
+                    String label = address.hasKey("label") ? address.getString("label") : null;
+                    String street = address.hasKey("street") ? address.getString("street") : null;
+                    String city = address.hasKey("city") ? address.getString("city") : null;
+                    String state = address.hasKey("state") ? address.getString("state") : null;
+                    String postCode = address.hasKey("postCode") ? address.getString("postCode") : null;
+                    String country = address.hasKey("country") ? address.getString("country") : null;
 
-                op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                        .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
-                        .withValue(ContactsContract.Data.MIMETYPE, CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE)
-                        .withValue(CommonDataKinds.StructuredPostal.TYPE, mapStringToPostalAddressType(address.getString("label")))
-                        .withValue(CommonDataKinds.StructuredPostal.LABEL, address.getString("label"))
-                        .withValue(CommonDataKinds.StructuredPostal.STREET, address.getString("street"))
-                        .withValue(CommonDataKinds.StructuredPostal.CITY, address.getString("city"))
-                        .withValue(CommonDataKinds.StructuredPostal.REGION, address.getString("state"))
-                        .withValue(CommonDataKinds.StructuredPostal.POSTCODE, address.getString("postCode"))
-                        .withValue(CommonDataKinds.StructuredPostal.COUNTRY, address.getString("country"));
+                    op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                            .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                            .withValue(ContactsContract.Data.MIMETYPE, CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE)
+                            .withValue(CommonDataKinds.StructuredPostal.TYPE, mapStringToPostalAddressType(label != null ? label : ""))
+                            .withValue(CommonDataKinds.StructuredPostal.LABEL, label)
+                            .withValue(CommonDataKinds.StructuredPostal.STREET, street)
+                            .withValue(CommonDataKinds.StructuredPostal.CITY, city)
+                            .withValue(CommonDataKinds.StructuredPostal.REGION, state)
+                            .withValue(CommonDataKinds.StructuredPostal.POSTCODE, postCode)
+                            .withValue(CommonDataKinds.StructuredPostal.COUNTRY, country);
 
-                ops.add(op.build());
+                    ops.add(op.build());
+                }
             }
         }
 
