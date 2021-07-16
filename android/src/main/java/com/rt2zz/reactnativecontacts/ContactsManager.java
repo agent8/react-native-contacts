@@ -833,8 +833,15 @@ public class ContactsManager extends ReactContextBaseJavaModule implements Activ
                 .withValue(StructuredName.SUFFIX, suffix);
         ops.add(op.build());
 
-        op = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
-                .withSelection(ContactsContract.Data.CONTACT_ID + "=? AND " + ContactsContract.Data.MIMETYPE + " = ?", new String[]{String.valueOf(recordID), Organization.CONTENT_ITEM_TYPE})
+        // Fix https://easilydo.atlassian.net/browse/ECANDR-5170
+        // remove existing Organization first if exists
+        op = ContentProviderOperation.newDelete(ContactsContract.Data.CONTENT_URI)
+                .withSelection(ContactsContract.Data.RAW_CONTACT_ID + "=? AND " + ContactsContract.Data.MIMETYPE + " = ?", new String[]{String.valueOf(rawContactId), Organization.CONTENT_ITEM_TYPE});
+        ops.add(op.build());
+        // insert a new Organization data
+        op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                .withValue(ContactsContract.Data.MIMETYPE, Organization.CONTENT_ITEM_TYPE)
+                .withValue(ContactsContract.Data.RAW_CONTACT_ID, String.valueOf(rawContactId))
                 .withValue(Organization.COMPANY, company)
                 .withValue(Organization.TITLE, jobTitle)
                 .withValue(Organization.DEPARTMENT, department);
